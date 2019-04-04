@@ -82,3 +82,6 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+# Environment variables config
+nodemon.json
