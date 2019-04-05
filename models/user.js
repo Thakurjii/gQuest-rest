@@ -2,24 +2,24 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 const userSchema = new Schema({
-    name: {
+    _id: {
         type: String,
         required: true
     },
     emailid: {
-        type: string,
+        type: String,
         required: true
     },
-    password: {
-        type: string,
+    hashedPassword: {
+        type: String,
         required: true
     },
     followers: [{
-        type: [mongoose.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
     following: [{
-        type: [mongoose.Types.ObjectId],
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     }],
     interests: [{

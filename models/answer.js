@@ -1,23 +1,23 @@
-var dateTime = require('node-datetime')
-
 const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 
 const answerSchema = new Schema({
     answer: {
-        type: string,
+        type: String,
         required: true
     },
     ansBy: {
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
         required: true
     },
-    ansAt: dateTime.create().format('Y-m-d H:M:S'),
+    ansAt: {
+        type: String
+    },
     question: {
-        type: mongoose.Types.ObjectId,
-        ref: 'User',
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Question',
         required: true
     },
     likes: {

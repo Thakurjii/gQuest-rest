@@ -1,27 +1,25 @@
-var dateTime = require('node-datetime')
-
 const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 const questionSchema = new Schema({
     question: {
-        type: string,
+        type: String,
         required: true
     },
     askedBy: {
-        user: {
-            type: mongoose.Types.ObjectId,
-            ref: 'User'
-        },
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
-    askedAt: dateTime.create().format('Y-m-d H:M:S'),
+    askedAt: {
+        type: String
+    },
     answers: [{
-        type: mongoose.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'Answer'
     }],
     tags: [{
-        type: string
+        type: String
     }]
 })
 
