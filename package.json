@@ -23,9 +23,14 @@
   },
   "homepage": "https://github.com/Thakurjii/gQuest-rest#readme",
   "dependencies": {
+    "bcrypt": "^3.0.5",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
-    "mongoose": "^5.4.21"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.4.21",
+    "node-datetime": "^2.1.2",
+    "nodemailer": "^6.0.0",
+    "nodemailer-sendgrid-transport": "^0.2.0"
   },
   "devDependencies": {
     "nodemon": "^1.18.10"
