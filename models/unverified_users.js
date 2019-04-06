@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
-const userSchema = new Schema({
+const unverifiedUser = new Schema({
     _id: {
         type: String,
         required: true
@@ -15,7 +15,8 @@ const userSchema = new Schema({
         required: true
     },
     description: {
-        type: String
+        type: String,
+        default: "A gQuest User ;)"
     },
     userQuestions: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -38,4 +39,4 @@ const userSchema = new Schema({
     }]
 })
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = mongoose.model('UnverifiedUser', unverifiedUser)

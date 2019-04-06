@@ -8,7 +8,7 @@ const answerSchema = new Schema({
         required: true
     },
     ansBy: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         required: true
     },
@@ -21,7 +21,8 @@ const answerSchema = new Schema({
         required: true
     },
     likes: {
-        type: Number
+        type: Number,
+        default: 0
     }
 })
 

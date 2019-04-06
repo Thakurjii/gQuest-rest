@@ -7,7 +7,7 @@ const questionSchema = new Schema({
         required: true
     },
     askedBy: {
-        type: mongoose.Schema.Types.ObjectId,
+        type: String,
         ref: 'User',
         required: true
     },
