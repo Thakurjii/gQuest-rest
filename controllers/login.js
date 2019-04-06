@@ -8,9 +8,7 @@ module.exports.login = (req, res, next) => {
         id = req.body.username
         password = req.body.password
     } catch (err) {
-        res.json({
-            message: err
-        })
+        next(err)
     }
     let loadedUser;
     User.findById(id)
@@ -33,17 +31,13 @@ module.exports.login = (req, res, next) => {
             const token = jwt.sign({
                 emailid: loadedUser.emailid,
                 username: loadedUser._id
-            },process.env.WEB_TOKEN_KEY,{
-                expiresIn: '1h'
-            })
+            },process.env.WEB_TOKEN_KEY)
             res.json({
                     token: token.toString(),
                     username: loadedUser._id
                 })
         })
         .catch(err => {
-            res.json({
-                message: err
-            })
+            next(err)
         })
 }
