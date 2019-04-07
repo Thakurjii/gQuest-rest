@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 
 const User = require('../models/user')
 const UnverifiedUser = require('../models/unverified_users')
-const sendMail = require('../utils/send-mail')
+const transporter = require('../utils/send-mail')
 
 module.exports.signup = (req, res, next) => {
     try {
@@ -54,23 +54,25 @@ module.exports.signup = (req, res, next) => {
             }, process.env.WEB_TOKEN_KEY,{
                 expiresIn: '1h'
             })
-            mailFrom = "Team.gQuest@gmail.com"
-
-            sendMail({
-    to: `${mailTo}`,
-    from: `${mailFrom}`,
-    subject: 'Email Verification',
-    html: `
-        <strong style="font-family: 'Montserrat', sans-serif; color: 'black';">Hey ${name},</strong>
-        <p style="font-family: 'Montserrat', sans-serif; color: 'black';">Welcome to gQuest.</p>
-        <p style="font-family: 'Montserrat', sans-serif; color: 'black';">
-        This is a verification mail. Just click on the below mentioned link.</p>
-        http://localhost:3000/signup/confirmation/${confirmationId}<br>
-    <p style="font-family: 'Montserrat', sans-serif; color: 'black';">gQuest is a place where you can gain and share your knowledge. It is an open source platform built for everyone to interact with people via Questions and Answers</p>
-    <p style="font-family: 'Montserrat', sans-serif; color: 'black';">In case you haven't created your account yet.</p>
-    <p style="font-family: 'Montserrat', sans-serif; color: 'black';">Visit :- <a href="#">gQuest.com/signup</a></p>
-    `,
-            })
+            //node-mailer code goes here...
+            //setup email data with unicode symbols
+            let mailOptions = {
+                from: `"gQuest Team 👻" <${process.env.GQUEST_MAIL_ID}>`, // sender address
+                to: `${mailTo}`, // list of receivers
+                subject: "Email Verification ✔", // Subject line
+                html: `<b>Hey ${name},</b>
+                <p style="font-family: 'Montserrat', sans-serif; color: 'black';">Welcome to gQuest.</p>
+                    <p style="font-family: 'Montserrat', sans-serif; color: 'black';">
+                    This is a verification mail. Just click on the below mentioned link.</p>
+                    http://localhost:3000/signup/confirmation/${confirmationId}<br>
+                <p style="font-family: 'Montserrat', sans-serif; color: 'black';">gQuest is a place where you can gain and share your knowledge. It is an open source platform built for everyone to interact with people via Questions and Answers</p>
+                <p style="font-family: 'Montserrat', sans-serif; color: 'black';">In case you haven't created your account yet.</p>
+                <p style="font-family: 'Montserrat', sans-serif; color: 'black';">Visit :- <a href="#">gQuest.com/signup</a></p>
+                ` // html body
+            }
+            return transporter.sendMail(mailOptions)
+        })
+        .then(info => {
             unverifiedUser = new UnverifiedUser({
                 _id: username,
                 emailid: emailid,
