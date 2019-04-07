@@ -100,13 +100,13 @@ module.exports.confirmSignup = (req, res, next) => {
     }
     username = validId.username
     console.log(username)
-    UnverifiedUser.findByIdAndRemove(username)
-        .then(removedUser => {
+    UnverifiedUser.findByIdAndDelete(username)
+        .then(deletedUser => {
             verifiedUser = new User({
-                _id: removedUser._id,
-                emailid: removedUser.emailid,
-                hashedPassword: removedUser.hashedPassword,
-                interests: removedUser.interests
+                _id: deletedUser._id,
+                emailid: deletedUser.emailid,
+                hashedPassword: deletedUser.hashedPassword,
+                interests: deletedUser.interests
             })
             return verifiedUser.save()
         })

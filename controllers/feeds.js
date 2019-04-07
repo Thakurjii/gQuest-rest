@@ -3,8 +3,9 @@ const mongoose = require('mongoose')
 
 const Question = require('../models/question')
 const Answer = require('../models/answer')
+const User = require('../models/user')
 
-module.exports.getIndex = (req, res, next) => {
+module.exports.getIndex = (_req, res, next) => {
     Question.find()
         .then(result => {
             res.json(result)
@@ -20,19 +21,33 @@ module.exports.askQuestion = (req, res, next) => {
     } catch (err) {
         next(err)
     }
-    question = new Question({
-        question: question,
-        askedBy: askedBy,
-        tags: tags,
-        askedAt: dateTime.create().format('Y-m-d H:M:S')
-    })
-    question.save()
-        .then(result => {
+    // Performing db-related operations with transactions
+    let user;
+    mongoose.startSession()
+        .then(_session => {
+            session = _session
+            session.startTransaction()
+            return User.findById(askedBy)
+        })
+        .then(loadedUser => {
+            user = loadedUser
+            question = new Question({
+                question: question,
+                askedBy: askedBy,
+                tags: tags,
+                askedAt: dateTime.create().format('Y-m-d H:M:S')
+            })
+            return question.save()
+        })
+        .then(question => {
+            user.userQuestions.push(question._id)
+            return user.save()
+        })
+        .then(_result => {
+            session.commitTransaction()
             res.redirect('/')
         })
-        .catch(err => {
-            next(err)
-        })
+        .catch(err => next(err))
 }
 
 module.exports.answer = (req, res, next) => {
@@ -43,17 +58,36 @@ module.exports.answer = (req, res, next) => {
     } catch (err) {
         next(err)
     }
-    ans = new Answer({
-        question: question,
-        answer:answer,
-        ansBy: ansBy,
-        ansAt: dateTime.create().format('Y-m-d H:M:S')
-    })
-    ans.save()
-    .then(result => {
-        res.redirect('/')
-    })
-    .catch(err => {
-        next(err)
-    })
+    // Performing db-related operations with transactions
+    let user;
+    mongoose.startSession()
+        .then(_session => {
+            session = _session
+            session.startTransaction()
+            return User.findById(ansBy)
+        })
+        .then(loadedUser => {
+            user = loadedUser
+            ans = new Answer({
+                question: question,
+                answer:answer,
+                ansBy: ansBy,
+                ansAt: dateTime.create().format('Y-m-d H:M:S')
+            })  
+            return ans.save()
+        })
+        .then(ans => {
+            user.userAnswers.push(ans._id)
+            return user.save()
+        })
+        .then(_result => Question.findById(question))
+        .then(ques => {
+            ques.answers.push(question)
+            return ques.save()
+        })
+        .then(_result => {
+            session.commitTransaction()
+            res.redirect('/')
+        })
+        .catch(err => next(err))
 }
